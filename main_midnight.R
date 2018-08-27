@@ -6,7 +6,13 @@ rm(list=ls())
 # Load libraries
 library(ADPCA)
 # Set working directory
-setwd("MP_ADPCA_Monitoring")
+remote <- TRUE
+if (remote) {
+  setwd("C:/Users/Kate Newhart/odrive/Mines/Code/MP_ADPCA_Monitoring")
+} else {
+  setwd("C:/Users/SB-MBR/Desktop/R Code/MP_ADPCA_Monitoring")
+}
+
 # Load variables
 source("vars.R")
 
