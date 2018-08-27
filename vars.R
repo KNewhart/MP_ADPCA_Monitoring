@@ -1,6 +1,6 @@
 dataLocation <- "C:/Users/Kate Newhart/odrive/Mines/Data/MP SB-MBR Data/"
 testingDay <- as.Date("2018 07 30", format = "%Y %m %d")
-rollingWindowDays <- 4
+rollingWindowDays <- 7
 updateDays <- 1
 nDays <- rollingWindowDays + updateDays + round(rollingWindowDays*0.1)
 alphaN <- 0.01 # Alpha value for statistical analysis
