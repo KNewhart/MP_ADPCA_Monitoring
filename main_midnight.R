@@ -1,5 +1,5 @@
 ### Preliminaries
-
+#devtools::install_github("gabrielodom/mvMonitoring")
 # Clear global environment
 rm(list=ls())
 
@@ -10,17 +10,15 @@ setwd("MP_ADPCA_Monitoring")
 # Load variables
 source("vars.R")
 
+# TODO: Add check for previously compiled data
 
-
-
-
-# Compile and clean data 
+### Compile and clean data 
 # loadandcleanDBF returns a dataframe with all days including column names
 rawData <- loadandcleanDBF(dataLocation, testingDay, nDays)
 # convert to xts
 rawData <- xts(rawData[,-1], order.by = rawData[,1])
 rawData <- rawData[paste("/",testingDay,sep="")]
-
+save(rawData, file = "trainingSpecs/rawData.R")
 
 ## Train model: Single state
 uniqueData <- uniquenessCheck(rawData)
@@ -33,8 +31,11 @@ trainingDataSS <- createTrainingSpecs(data = uniqueData,
                                       rollingWindowDays = rollingWindowDays,
                                       alpha = alphaN,
                                       faultsToTriggerAlarm = faultsToTriggerAlarm)
+# Save results
+save(trainingDataSS, 
+     file = paste("trainingSpecs/trainingDataSS.R",sep=""))
 
-# Run multistate function for BR and MT, return xts with test data
+### Run multistate function for BR and MT, return xts with test data
 trainingDataBR <- multistate_train(rawData = rawData, 
                                   vars = varsBR, 
                                   stateVars = stateVarsBR, 
@@ -42,6 +43,8 @@ trainingDataBR <- multistate_train(rawData = rawData,
                                   rollingWindowDays = rollingWindowDays, 
                                   alphaN = alphaN,
                                   faultsToTriggerAlarm = faultsToTriggerAlarm)
+save(trainingDataBR, 
+     file = paste("trainingSpecs/trainingDataBR.R",sep=""))
 
 trainingDataMT <- multistate_train(rawData = rawData, 
                                   vars = varsMT, 
@@ -50,4 +53,5 @@ trainingDataMT <- multistate_train(rawData = rawData,
                                   rollingWindowDays = rollingWindowDays, 
                                   alphaN = alphaN,
                                   faultsToTriggerAlarm = faultsToTriggerAlarm)
-
+save(trainingDataMT, 
+     file = paste("trainingSpecs/trainingDataMT.R",sep=""))
