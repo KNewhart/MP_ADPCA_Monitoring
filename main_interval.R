@@ -35,11 +35,11 @@ load("trainingSpecs/trainingDataMT.R")
 # Only include states with training data
 states2keepBR <- numeric()
 states2keepMT <- numeric()
-for (i in 1:length(trainingDataBR[[1]])) {
-  states2keepBR <- c(states2keepBR, as.integer(trainingDataBR[[1]][[i]]$labelCol[1]))
+for (i in 1:length(trainingDataBR[[1]][[1]])) {
+  states2keepBR <- c(states2keepBR, as.integer(trainingDataBR[[1]][[1]][[i]]$labelCol[1]))
 }
-for (i in 1:length(trainingDataMT[[1]])) {
-  states2keepMT <- c(states2keepMT, as.integer(trainingDataMT[[1]][[i]]$labelCol[1]))
+for (i in 1:length(trainingDataMT[[1]][[1]])) {
+  states2keepMT <- c(states2keepMT, as.integer(trainingDataMT[[1]][[1]][[i]]$labelCol[1]))
 }
 
 filtered.dataBR_ls <- list()
@@ -70,16 +70,15 @@ alarmDataSS <- testNewObs(data = rawData,
 
 # Test multistate
 alarmDataBR <- multistate_test(data = filtered.dataBR_ls,
-                              trainingSpec_ls = trainingDataBR[[2]],
+                              trainingSpec_ls = trainingDataBR[[2]][[1]],
                               testingDay = trainingDataBR[[3]],
                               faultsToTriggerAlarm = trainingDataBR[[4]])
 
 alarmDataMT <- multistate_test(data = filtered.dataMT_ls,
-                               trainingSpec_ls = trainingDataMT[[2]],
+                               trainingSpec_ls = trainingDataMT[[2]][[1]],
                                testingDay = trainingDataMT[[3]],
                                faultsToTriggerAlarm = trainingDataMT[[4]])
 
-
-
-
-
+write.csv(as.data.frame(alarmDataSS), file = paste("results/",testingDay," alarmDataSS.csv", sep=""))
+write.csv(as.data.frame(alarmDataBR), file = paste("results/",testingDay," alarmDataBR.csv", sep=""))
+write.csv(as.data.frame(alarmDataMT), file = paste("results/",testingDay," alarmDataMT.csv", sep=""))
