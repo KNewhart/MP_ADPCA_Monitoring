@@ -20,21 +20,6 @@ rawData <- xts(rawData[,-1], order.by = rawData[,1])
 rawData <- rawData[paste("/",testingDay,sep="")]
 save(rawData, file = "trainingSpecs/rawData.R")
 
-## Train model: Single state
-uniqueData <- uniquenessCheck(rawData)
-# Generate 'labelCol'
-uniqueData <- cbind(uniqueData, rep(1,nrow(uniqueData)))
-colnames(uniqueData)[ncol(uniqueData)] <- "labelCol"
-# Train
-trainingDataSS <- createTrainingSpecs(data = uniqueData,
-                                      testingDay = testingDay,
-                                      rollingWindowDays = rollingWindowDays,
-                                      alpha = alphaN,
-                                      faultsToTriggerAlarm = faultsToTriggerAlarm)
-# Save results
-save(trainingDataSS, 
-     file = paste("trainingSpecs/trainingDataSS.R",sep=""))
-
 ### Run multistate function for BR and MT, return xts with test data
 trainingDataBR <- multistate_train(rawData = rawData, 
                                   vars = varsBR, 
@@ -55,3 +40,25 @@ trainingDataMT <- multistate_train(rawData = rawData,
                                   faultsToTriggerAlarm = faultsToTriggerAlarm)
 save(trainingDataMT, 
      file = paste("trainingSpecs/trainingDataMT.R",sep=""))
+
+
+## Train model: Single state
+uniqueData <- uniquenessCheck(rawData)
+# Generate 'labelCol'
+uniqueData <- cbind(uniqueData, rep(1,nrow(uniqueData)))
+colnames(uniqueData)[ncol(uniqueData)] <- "labelCol"
+
+## SAVE MEMORY, clean shit up:
+rm(rawData)
+rm(trainingDataBR)
+rm(trainingDataMT)
+
+# Train
+trainingDataSS <- createTrainingSpecs(data = uniqueData,
+                                      testingDay = testingDay,
+                                      rollingWindowDays = rollingWindowDays,
+                                      alpha = alphaN,
+                                      faultsToTriggerAlarm = faultsToTriggerAlarm)
+# Save results
+save(trainingDataSS, 
+     file = paste("trainingSpecs/trainingDataSS.R",sep=""))
